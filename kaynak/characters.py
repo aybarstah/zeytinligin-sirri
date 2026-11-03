@@ -485,8 +485,12 @@ SUIT_SH = (74, 78, 88)
 
 
 @lru_cache(maxsize=256)
-def beton(mouth=0, blink=False, look=0):
-    """Beton Bey: pushy contractor. White hard hat, grey suit over a big belly, red tie, thick moustache, blueprint roll."""
+def beton(mouth=0, blink=False, look=0, who="beton"):
+    """Beton Bey: pushy contractor. White hard hat, grey suit over a big belly, red tie, thick moustache, blueprint roll.
+    who="muhtar": village headman variant — flat cap, brown jacket, white moustache, walking stick."""
+    M = who == "muhtar"
+    SUIT = (120, 92, 64) if M else (96, 100, 110)
+    SUIT_SH = (96, 72, 50) if M else (74, 78, 88)
     s = SS
     im = Image.new("RGBA", (ZW * s, ZH * s), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
@@ -500,7 +504,10 @@ def beton(mouth=0, blink=False, look=0):
     d.ellipse(S(150, 400, 450, 760), fill=SUIT)
     d.rounded_rectangle(S(170, 390, 430, 560), radius=60 * s, fill=SUIT)
     d.polygon(P([(258, 392), (300, 640), (342, 392)]), fill=(245, 245, 245))      # shirt
-    d.polygon(P([(288, 410), (312, 410), (318, 600), (300, 630), (282, 600)]), fill=(200, 40, 50))  # tie
+    if M:
+        d.polygon(P([(262, 400), (338, 400), (330, 640), (270, 640)]), fill=(70, 90, 60))   # knitted vest
+    else:
+        d.polygon(P([(288, 410), (312, 410), (318, 600), (300, 630), (282, 600)]), fill=(200, 40, 50))  # tie
     d.polygon(P([(258, 392), (300, 470), (240, 520), (220, 420)]), fill=SUIT_SH)   # lapels
     d.polygon(P([(342, 392), (300, 470), (360, 520), (380, 420)]), fill=SUIT_SH)
     for y in (620, 680):
@@ -508,8 +515,12 @@ def beton(mouth=0, blink=False, look=0):
     d.rounded_rectangle(S(360, 470, 410, 490), radius=4 * s, fill=(240, 240, 240))  # pocket square
     # arms: left holds blueprint roll, right on belly
     _limb(d, (175 * s, 440 * s), (150 * s, 600 * s), 70 * s, SUIT)
-    d.rounded_rectangle(S(80, 560, 240, 610), radius=24 * s, fill=(70, 130, 200))
-    d.ellipse(S(70, 560, 110, 610), fill=(230, 240, 250))
+    if M:
+        d.line(S(120, 560, 100, 1080), fill=(90, 60, 36), width=16 * s)               # walking stick
+        d.arc(S(100, 520, 170, 590), 180, 360, fill=(90, 60, 36), width=16 * s)
+    else:
+        d.rounded_rectangle(S(80, 560, 240, 610), radius=24 * s, fill=(70, 130, 200))
+        d.ellipse(S(70, 560, 110, 610), fill=(230, 240, 250))
     d.ellipse(S(140, 570, 190, 620), fill=SKIN)
     _limb(d, (425 * s, 440 * s), (440 * s, 600 * s), 70 * s, SUIT)
     _limb(d, (440 * s, 600 * s), (360 * s, 640 * s), 60 * s, SUIT)
@@ -522,13 +533,21 @@ def beton(mouth=0, blink=False, look=0):
     d.ellipse(S(cx + 96, cy - 4, cx + 130, cy + 46), fill=SKIN)
     # double chin line
     d.arc(S(cx - 70, cy + 70, cx + 70, cy + 130), 20, 160, fill=SKIN_SH, width=5 * s)
-    # hard hat
-    d.chord(S(cx - 125, cy - 190, cx + 125, cy - 10), 180, 360, fill=(250, 250, 245))
-    d.rounded_rectangle(S(cx - 150, cy - 108, cx + 150, cy - 80), radius=12 * s, fill=(235, 235, 228))
-    d.rounded_rectangle(S(cx - 16, cy - 190, cx + 16, cy - 100), radius=8 * s, fill=(225, 225, 218))
+    if M:   # flat cap
+        d.chord(S(cx - 118, cy - 150, cx + 118, cy - 20), 180, 360, fill=(80, 76, 72))
+        d.polygon(P([(cx - 118, cy - 86), (cx + 150, cy - 96), (cx + 160, cy - 70), (cx - 110, cy - 66)]), fill=(64, 60, 56))
+    else:   # hard hat
+        d.chord(S(cx - 125, cy - 190, cx + 125, cy - 10), 180, 360, fill=(250, 250, 245))
+        d.rounded_rectangle(S(cx - 150, cy - 108, cx + 150, cy - 80), radius=12 * s, fill=(235, 235, 228))
+        d.rounded_rectangle(S(cx - 16, cy - 190, cx + 16, cy - 100), radius=8 * s, fill=(225, 225, 218))
     # brows (arrogant)
-    d.line(S(cx - 78, cy - 46, cx - 22, cy - 34), fill=(40, 30, 26), width=12 * s)
-    d.line(S(cx + 22, cy - 34, cx + 78, cy - 46), fill=(40, 30, 26), width=12 * s)
+    browc = (220, 220, 214) if M else (40, 30, 26)
+    if M:
+        d.line(S(cx - 78, cy - 36, cx - 22, cy - 44), fill=browc, width=12 * s)
+        d.line(S(cx + 22, cy - 44, cx + 78, cy - 36), fill=browc, width=12 * s)
+    else:
+        d.line(S(cx - 78, cy - 46, cx - 22, cy - 34), fill=browc, width=12 * s)
+        d.line(S(cx + 22, cy - 34, cx + 78, cy - 46), fill=browc, width=12 * s)
     for ex in (cx - 46, cx + 46):
         if blink:
             d.arc(S(ex - 18, cy - 10, ex + 18, cy + 14), 200, 340, fill=(40, 28, 22), width=6 * s)
@@ -543,5 +562,5 @@ def beton(mouth=0, blink=False, look=0):
         d.chord(S(cx - 34, my - 16, cx + 34, my + h), 0, 180, fill=MOUTH)
     else:
         d.arc(S(cx - 30, my - 22, cx + 30, my + 8), 20, 160, fill=MOUTH, width=7 * s)
-    d.polygon(P([(cx - 80, my - 6), (cx - 30, my - 34), (cx, my - 24), (cx + 30, my - 34), (cx + 80, my - 6), (cx + 40, my - 14), (cx, my - 10), (cx - 40, my - 14)]), fill=(46, 34, 28))
+    d.polygon(P([(cx - 80, my - 6), (cx - 30, my - 34), (cx, my - 24), (cx + 30, my - 34), (cx + 80, my - 6), (cx + 40, my - 14), (cx, my - 10), (cx - 40, my - 14)]), fill=(225, 225, 220) if M else (46, 34, 28))
     return im.resize((ZW, ZH), Image.LANCZOS)

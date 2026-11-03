@@ -19,6 +19,7 @@ STYLE = {
     "zeynep": dict(stability=0.5, fx="loudnorm=I=-16:TP=-1.5:LRA=7"),
     "zeyto": dict(stability=0.0, fx="loudnorm=I=-16:TP=-1.5:LRA=7"),
     "ulu": dict(stability=0.5, fx="aecho=0.8:0.6:70|140:0.16|0.08,loudnorm=I=-16:TP=-1.5:LRA=7"),
+    "muhtar": dict(stability=0.5, fx="loudnorm=I=-16:TP=-1.5:LRA=7"),
     "beton": dict(stability=0.5, fx="loudnorm=I=-16:TP=-1.5:LRA=7"),
     "sinsi": dict(stability=0.0, fx="vibrato=f=16:d=0.08,loudnorm=I=-17:TP=-1.5:LRA=7"),
 }

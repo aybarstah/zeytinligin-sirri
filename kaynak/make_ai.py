@@ -18,7 +18,7 @@ XF = 0.35
 SERIF = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
 SANS = "/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"
 NAMES = {"zeynep": ("Mühendis", (120, 170, 80)), "zeyto": ("Zeyto", (240, 120, 120)), "ulu": ("Ulu", (200, 160, 110)),
-         "sinsi": ("Sinsi", (230, 140, 60)), "beton": ("Beton Bey", (180, 184, 196))}
+         "sinsi": ("Sinsi", (230, 140, 60)), "beton": ("Beton Bey", (180, 184, 196)), "muhtar": ("Muhtar", (200, 170, 120))}
 
 
 def ease(p):

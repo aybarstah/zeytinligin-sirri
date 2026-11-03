@@ -157,7 +157,7 @@ def bg_brand(color=OLIVE):
 # ---------------------------------------------------------------- UI pieces
 def name_tag(speaker):
     label, col = {"zeynep": ("Mühendis", OLIVE), "zeyto": ("Zeyto", RED), "ulu": ("Ulu", (110, 84, 56)),
-                  "sinsi": ("Sinsi", (60, 52, 46)), "beton": ("Beton Bey", (90, 96, 104))}[speaker]
+                  "sinsi": ("Sinsi", (60, 52, 46)), "beton": ("Beton Bey", (90, 96, 104)), "muhtar": ("Muhtar", (120, 92, 64))}[speaker]
     return text_image(label, 34, CREAM, 600, pill=col, pad=(26, 8))
 
 
@@ -248,10 +248,11 @@ class Shot:
 
     def __init__(self, bg, lines, zeynep_x=None, zeyto_x=None, zeyto_color=GREEN_OLIVE, zeynep_enter=False,
                  steps=None, accent=OLIVE, summary=None, props=None, layout="talk", lead=0.35, tail=0.5, end=None,
-                 gap=0.55, card=None, actors=None, tint=None, props_top=None, zeyto_drop=None, pan=True, bubble_top=400, zeynep_scale=None):
+                 gap=0.55, card=None, actors=None, tint=None, props_top=None, rain=False, flashes=(), zeyto_drop=None, pan=True, bubble_top=400, zeynep_scale=None):
         self.bg, self.lines = bg, lines
         self.tint = tint
         self.props_top = props_top or []
+        self.rain, self.flashes = rain, flashes
         self.actors, self.ydrop, self.do_pan, self.btop, self.zsc = actors or [], zeyto_drop, pan, bubble_top, zeynep_scale
         self.zx, self.yx, self.ycol = zeynep_x, zeyto_x, zeyto_color
         self.enter, self.steps, self.accent, self.summary = zeynep_enter, steps, accent, summary
@@ -343,17 +344,17 @@ class Shot:
             if t < a.get("appear", 0):
                 continue
             am = flap if speaker == kind else 0
-            if kind == "beton":
+            if kind in ("beton", "muhtar"):
                 sc = a.get("scale", 0.84)
                 bx = a["x"]
                 if a.get("enter"):
                     bx = lerp(W + 350, a["x"], ease(clamp((t - a.get("appear", 0)) / 0.9)))
                 bob = math.sin(T * 2.1) * 5
-                img = beton(am, (T + 2.2) % 3.7 < 0.13, -5)
+                img = beton(am, (T + 2.2) % 3.7 < 0.13, -5 if a.get("look", -1) < 0 else 5, kind)
                 img = fit(img, width=int(ZW * sc))
                 y0 = 1880 - ZH * sc + bob
                 frame.alpha_composite(img, (int(bx - ZCX * sc), int(y0)))
-                heads["beton"] = (bx, y0 + 70 * sc)
+                heads[kind] = (bx, y0 + 70 * sc)
                 continue
             if kind == "ulu":
                 wake = a.get("wake", 0)
@@ -434,6 +435,19 @@ class Shot:
             col, a = self.tint
             ov = Image.new("RGBA", frame.size, col + (int(255 * a),))
             frame.alpha_composite(ov)
+        if self.rain:
+            import random as _rnd
+            rr = _rnd.Random(int(T * 30))
+            ov = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+            od = ImageDraw.Draw(ov)
+            for _ in range(160):
+                x, y = rr.uniform(-100, W), rr.uniform(-100, H)
+                od.line([(x, y), (x + 22, y + 70)], fill=(200, 215, 235, 120), width=3)
+            frame.alpha_composite(ov)
+        for ft in self.flashes:
+            if 0 <= t - ft < 0.35:
+                a = int(200 * (1 - (t - ft) / 0.35))
+                frame.alpha_composite(Image.new("RGBA", frame.size, (235, 240, 255, a)))
 
         # end card text
         if self.end:

@@ -1,11 +1,12 @@
 import sys
 from PIL import Image
-import make_main as mm, story
+import make_main as mm, make_main2 as mm2, story
 cap = {}
 def fake(shots, label, out):
     cap['s'] = shots; cap['l'] = label; return out, 0
 mm.render_episode = fake
-getattr(mm, "ep" + sys.argv[1])()
+mm2.render_episode = fake
+getattr(mm2 if int(sys.argv[1]) > 5 else mm, "ep" + sys.argv[1])()
 shots = cap['s']; bar = story._bar(cap['l'])
 frames = []
 for s in shots:
