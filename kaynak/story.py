@@ -5,7 +5,7 @@ import subprocess
 from functools import lru_cache
 from PIL import Image, ImageDraw, ImageFilter
 from brand import *
-from characters import zeynep, zeyto, ZW, ZH, ZCX, YW, YH, ulu, UW, UH, sinsi, SW_, SH_
+from characters import zeynep, zeyto, ZW, ZH, ZCX, YW, YH, ulu, UW, UH, sinsi, SW_, SH_, beton
 from tts_tr import line_wav as _piper_wav, read_wav, envelope
 import tts_eleven as _eleven
 
@@ -248,9 +248,10 @@ class Shot:
 
     def __init__(self, bg, lines, zeynep_x=None, zeyto_x=None, zeyto_color=GREEN_OLIVE, zeynep_enter=False,
                  steps=None, accent=OLIVE, summary=None, props=None, layout="talk", lead=0.35, tail=0.5, end=None,
-                 gap=0.55, card=None, actors=None, tint=None, zeyto_drop=None, pan=True, bubble_top=400, zeynep_scale=None):
+                 gap=0.55, card=None, actors=None, tint=None, props_top=None, zeyto_drop=None, pan=True, bubble_top=400, zeynep_scale=None):
         self.bg, self.lines = bg, lines
         self.tint = tint
+        self.props_top = props_top or []
         self.actors, self.ydrop, self.do_pan, self.btop, self.zsc = actors or [], zeyto_drop, pan, bubble_top, zeynep_scale
         self.zx, self.yx, self.ycol = zeynep_x, zeyto_x, zeyto_color
         self.enter, self.steps, self.accent, self.summary = zeynep_enter, steps, accent, summary
@@ -342,9 +343,21 @@ class Shot:
             if t < a.get("appear", 0):
                 continue
             am = flap if speaker == kind else 0
+            if kind == "beton":
+                sc = a.get("scale", 0.84)
+                bx = a["x"]
+                if a.get("enter"):
+                    bx = lerp(W + 350, a["x"], ease(clamp((t - a.get("appear", 0)) / 0.9)))
+                bob = math.sin(T * 2.1) * 5
+                img = beton(am, (T + 2.2) % 3.7 < 0.13, -5)
+                img = fit(img, width=int(ZW * sc))
+                y0 = 1880 - ZH * sc + bob
+                frame.alpha_composite(img, (int(bx - ZCX * sc), int(y0)))
+                heads["beton"] = (bx, y0 + 70 * sc)
+                continue
             if kind == "ulu":
                 wake = a.get("wake", 0)
-                o = clamp((t - wake) / 0.8) if wake is not None else 1.0
+                o = clamp((t - wake) / 0.8) if wake is not None else a.get("eyes", 1.0)
                 blink = o >= 1 and (T + 0.9) % 4.1 < 0.15
                 img = ulu(am, round(o, 1), blink, -8 if a["x"] > W / 2 else 8)
                 sc = a.get("scale", 1.0)
@@ -406,6 +419,17 @@ class Shot:
                 frame.alpha_composite(yi, (int(self.yx - w / 2), int(feet - h - hop + drop)))
                 heads["zeyto"] = (self.yx, feet - h - hop + 40 + drop)
 
+        for img, x, y in self.props_top:
+            pulse = 0.85 + 0.15 * math.sin(T * 4)
+            im2 = img.copy()
+            im2.putalpha(im2.getchannel("A").point(lambda v: int(v * pulse)))
+            frame.alpha_composite(im2, (int(x - img.width / 2), int(y - img.height / 2)))
+        if self.actors and self._summary_img is not None and self.steps is None:
+            p = ease_back(clamp(t / 0.5))
+            c = self._summary_img
+            if p < 0.999:
+                c = c.resize((max(1, int(c.width * p)), max(1, int(c.height * p))), Image.BILINEAR)
+            frame.alpha_composite(c, (int(W / 2 - c.width / 2), int(250 + self._summary_img.height / 2 - c.height / 2)))
         if self.tint:
             col, a = self.tint
             ov = Image.new("RGBA", frame.size, col + (int(255 * a),))

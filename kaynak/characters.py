@@ -478,3 +478,70 @@ def sinsi(mouth=0, wing=0.0, blink=False):
         h = 14 if mouth == 1 else 24
         d.chord(S(cx - 24, my - 8, cx + 24, my + h), 0, 180, fill=(70, 20, 30))
     return im.resize((SW_, SH_), Image.LANCZOS)
+
+
+SUIT = (96, 100, 110)
+SUIT_SH = (74, 78, 88)
+
+
+@lru_cache(maxsize=256)
+def beton(mouth=0, blink=False, look=0):
+    """Beton Bey: pushy contractor. White hard hat, grey suit over a big belly, red tie, thick moustache, blueprint roll."""
+    s = SS
+    im = Image.new("RGBA", (ZW * s, ZH * s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    S = lambda *v: [x * s for x in v]
+    P = lambda pts: [(x * s, y * s) for x, y in pts]
+    # legs + shoes
+    for x0 in (210, 318):
+        d.rounded_rectangle(S(x0, 700, x0 + 78, 1020), radius=16 * s, fill=(60, 62, 70))
+        d.rounded_rectangle(S(x0 - 14, 1010, x0 + 92, 1080), radius=24 * s, fill=(30, 28, 30))
+    # body: belly
+    d.ellipse(S(150, 400, 450, 760), fill=SUIT)
+    d.rounded_rectangle(S(170, 390, 430, 560), radius=60 * s, fill=SUIT)
+    d.polygon(P([(258, 392), (300, 640), (342, 392)]), fill=(245, 245, 245))      # shirt
+    d.polygon(P([(288, 410), (312, 410), (318, 600), (300, 630), (282, 600)]), fill=(200, 40, 50))  # tie
+    d.polygon(P([(258, 392), (300, 470), (240, 520), (220, 420)]), fill=SUIT_SH)   # lapels
+    d.polygon(P([(342, 392), (300, 470), (360, 520), (380, 420)]), fill=SUIT_SH)
+    for y in (620, 680):
+        d.ellipse(S(330, y, 346, y + 16), fill=(40, 40, 46))
+    d.rounded_rectangle(S(360, 470, 410, 490), radius=4 * s, fill=(240, 240, 240))  # pocket square
+    # arms: left holds blueprint roll, right on belly
+    _limb(d, (175 * s, 440 * s), (150 * s, 600 * s), 70 * s, SUIT)
+    d.rounded_rectangle(S(80, 560, 240, 610), radius=24 * s, fill=(70, 130, 200))
+    d.ellipse(S(70, 560, 110, 610), fill=(230, 240, 250))
+    d.ellipse(S(140, 570, 190, 620), fill=SKIN)
+    _limb(d, (425 * s, 440 * s), (440 * s, 600 * s), 70 * s, SUIT)
+    _limb(d, (440 * s, 600 * s), (360 * s, 640 * s), 60 * s, SUIT)
+    d.ellipse(S(330, 620, 380, 670), fill=SKIN)
+    # head
+    cx, cy = 300, 260
+    d.rounded_rectangle(S(274, 330, 326, 400), radius=14 * s, fill=SKIN_SH)
+    d.ellipse(S(cx - 110, cy - 110, cx + 110, cy + 115), fill=SKIN)
+    d.ellipse(S(cx - 130, cy - 4, cx - 96, cy + 46), fill=SKIN)
+    d.ellipse(S(cx + 96, cy - 4, cx + 130, cy + 46), fill=SKIN)
+    # double chin line
+    d.arc(S(cx - 70, cy + 70, cx + 70, cy + 130), 20, 160, fill=SKIN_SH, width=5 * s)
+    # hard hat
+    d.chord(S(cx - 125, cy - 190, cx + 125, cy - 10), 180, 360, fill=(250, 250, 245))
+    d.rounded_rectangle(S(cx - 150, cy - 108, cx + 150, cy - 80), radius=12 * s, fill=(235, 235, 228))
+    d.rounded_rectangle(S(cx - 16, cy - 190, cx + 16, cy - 100), radius=8 * s, fill=(225, 225, 218))
+    # brows (arrogant)
+    d.line(S(cx - 78, cy - 46, cx - 22, cy - 34), fill=(40, 30, 26), width=12 * s)
+    d.line(S(cx + 22, cy - 34, cx + 78, cy - 46), fill=(40, 30, 26), width=12 * s)
+    for ex in (cx - 46, cx + 46):
+        if blink:
+            d.arc(S(ex - 18, cy - 10, ex + 18, cy + 14), 200, 340, fill=(40, 28, 22), width=6 * s)
+        else:
+            d.ellipse(S(ex - 13 + look, cy - 12, ex + 13 + look, cy + 16), fill=(40, 28, 22))
+            d.ellipse(S(ex - 5 + look, cy - 6, ex + 2 + look, cy + 2), fill=(255, 255, 255))
+    d.ellipse(S(cx - 20, cy + 14, cx + 20, cy + 52), fill=SKIN_SH)   # big nose
+    # mouth under moustache
+    my = cy + 82
+    if mouth:
+        h = 22 if mouth == 1 else 36
+        d.chord(S(cx - 34, my - 16, cx + 34, my + h), 0, 180, fill=MOUTH)
+    else:
+        d.arc(S(cx - 30, my - 22, cx + 30, my + 8), 20, 160, fill=MOUTH, width=7 * s)
+    d.polygon(P([(cx - 80, my - 6), (cx - 30, my - 34), (cx, my - 24), (cx + 30, my - 34), (cx + 80, my - 6), (cx + 40, my - 14), (cx, my - 10), (cx - 40, my - 14)]), fill=(46, 34, 28))
+    return im.resize((ZW, ZH), Image.LANCZOS)

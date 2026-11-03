@@ -342,6 +342,177 @@ def ep3():
     return render_episode(shots, "BÖLÜM 3", OUT + "S1B3_sinsinin_plani.mp4")
 
 
+def ic_spot_leaf():
+    im, d = canvas()
+    d.polygon(leaf_poly(400, 400, 680, 220, -30), fill=(96, 128, 70))
+    a = math.radians(-30)
+    d.line([(400 - 330 * math.cos(a), 400 - 330 * math.sin(a)), (400 + 330 * math.cos(a), 400 + 330 * math.sin(a))], fill=(70, 96, 50), width=10)
+    for x, y, r in [(300, 450, 46), (450, 360, 38), (520, 300, 30), (360, 380, 26)]:
+        d.ellipse([x - r - 14, y - r - 14, x + r + 14, y + r + 14], fill=(230, 210, 90))
+        d.ellipse([x - r, y - r, x + r, y + r], fill=(70, 60, 40))
+        d.ellipse([x - r * 0.45, y - r * 0.45, x + r * 0.45, y + r * 0.45], fill=(120, 110, 70))
+    return im
+
+
+def ic_dry_branch():
+    im, d = canvas()
+    d.line([(120, 600), (420, 360), (680, 200)], fill=(110, 84, 56), width=40, joint="curve")
+    d.line([(420, 360), (520, 520)], fill=(140, 120, 100), width=22)
+    for k, (x, y) in enumerate([(540, 540), (500, 470)]):
+        d.polygon(leaf_poly(x, y, 90, 30, 60 + k * 30), fill=(170, 150, 90))
+    for k, (x, y) in enumerate([(600, 230), (680, 180), (520, 290)]):
+        d.polygon(leaf_poly(x, y - 40, 110, 36, -40 + k * 20), fill=(110, 140, 80))
+    d.line([(440, 420), (520, 440)], fill=RED, width=12)
+    d.line([(450, 380), (500, 480)], fill=RED, width=12)
+    return im
+
+
+def ic_saw():
+    im, d = canvas()
+    d.line([(100, 650), (300, 420), (380, 200)], fill=(110, 84, 56), width=70, joint="curve")
+    for x, y in [(300, 420), (200, 540)]:
+        d.ellipse([x - 40, y - 26, x + 40, y + 26], fill=(220, 190, 140))
+    for k, (x, y, ang) in enumerate([(400, 320, -30), (460, 240, -50), (420, 160, -70)]):
+        d.line([(380, 200 + k * 60), (x + 140, y - 30)], fill=(110, 84, 56), width=14)
+        d.polygon(leaf_poly(x + 160, y - 40, 120, 40, ang), fill=(130, 170, 80))
+    d.polygon([(470, 560), (720, 480), (740, 520), (490, 600)], fill=(190, 196, 204))
+    for k in range(8):
+        x = 490 + k * 30
+        d.polygon([(x, 598 - k * 10), (x + 15, 615 - k * 10), (x + 30, 594 - k * 10)], fill=(150, 156, 164))
+    d.rounded_rectangle([690, 450, 770, 540], radius=18, fill=RED)
+    return im
+
+
+def ic_manure():
+    im, d = canvas()
+    d.rectangle([0, 560, 800, 800], fill=(120, 90, 60))
+    d.rectangle([370, 200, 430, 600], fill=(110, 84, 56))
+    d.ellipse([200, 80, 600, 320], fill=(118, 140, 96))
+    d.ellipse([140, 540, 660, 640], fill=(80, 56, 36))
+    for k in range(10):
+        x = 180 + k * 50
+        d.ellipse([x - 22, 560 - (k % 3) * 8, x + 22, 590 - (k % 3) * 8], fill=(96, 68, 44))
+    d.rounded_rectangle([560, 360, 760, 560], radius=20, fill=(220, 200, 150))
+    d.text((585, 420), "GÜBRE", font=font(F_BOLD, 40), fill=DARK)
+    return im
+
+
+def ic_copper():
+    im, d = canvas()
+    d.rounded_rectangle([200, 300, 470, 700], radius=50, fill=(40, 120, 200))
+    d.rounded_rectangle([260, 220, 410, 310], radius=20, fill=(30, 90, 160))
+    d.line([(470, 360), (620, 250)], fill=(60, 60, 60), width=18)
+    d.polygon([(610, 230), (680, 200), (660, 280)], fill=(60, 60, 60))
+    for k in range(14):
+        x = 690 + (k % 4) * 22 - 20
+        y = 160 + (k // 4) * 30 + (k % 2) * 10
+        d.ellipse([x - 7, y - 7, x + 7, y + 7], fill=(80, 170, 230))
+    d.ellipse([255, 420, 415, 580], fill=(250, 250, 250))
+    d.text((290, 455), "Cu", font=font(F_BOLD, 80), fill=(180, 90, 40))
+    return im
+
+
+def ic_open_canopy():
+    im, d = canvas()
+    d.rectangle([370, 380, 430, 740], fill=(110, 84, 56))
+    for x, y, r in [(220, 300, 120), (580, 300, 120), (300, 170, 100), (500, 170, 100)]:
+        d.ellipse([x - r, y - r * 0.7, x + r, y + r * 0.7], fill=(118, 140, 96))
+    d.ellipse([330, 180, 470, 330], fill=(250, 230, 140))
+    for k in range(6):
+        a = math.radians(k * 60 + 30)
+        d.line([(400 + math.cos(a) * 90, 255 + math.sin(a) * 90), (400 + math.cos(a) * 140, 255 + math.sin(a) * 140)], fill=SUN, width=12)
+    return im
+
+
+def ic_fallen_leaves():
+    im, d = canvas()
+    d.rectangle([0, 560, 800, 800], fill=(150, 120, 80))
+    rnd = random.Random(8)
+    for k in range(14):
+        x, y = rnd.uniform(80, 720), rnd.uniform(590, 760)
+        d.polygon(leaf_poly(x, y, 90, 30, rnd.uniform(-60, 60)), fill=(150, 150, 80))
+        d.ellipse([x - 8, y - 8, x + 8, y + 8], fill=(70, 60, 40))
+    d.line([(620, 100), (430, 560)], fill=(110, 84, 56), width=30)
+    d.rounded_rectangle([300, 540, 560, 590], radius=12, fill=(110, 110, 118))
+    for k in range(7):
+        d.line([(315 + k * 38, 585), (305 + k * 38, 650)], fill=(110, 110, 118), width=12)
+    return im
+
+
+def ep4():
+    day = bg_orchard(("p",))
+    clear = bg_clearing(False)
+    Z, Y, U, B = "zeynep", "zeyto", "ulu", "beton"
+    ulu_actor = [{"kind": "ulu", "x": 280, "feet": 1900, "scale": 0.95, "wake": None}]
+    shots = [
+        Shot(day, [
+            (B, "Merhabalar! Siz yeni mühendis olmalısınız. Ben Beton. Herkes bana Beton Bey der.", {"tag": "confident"}),
+            (Z, "Hoş geldiniz. Buyurun, ne istemiştiniz?", {}),
+            (B, "Kısa keseyim. Bu araziyi almak istiyorum. Buraya kocaman bir otel yapacağım!", {"tag": "excited"}),
+            (Z, "Bu zeytinlik satılık değil.", {"tag": "firmly"}),
+            (B, "Bakın, bu ağaçlar zaten yaşlı, bitmiş. Hiçbir işe yaramazlar.", {"tag": "dismissively"}),
+            (B, "İyi para veririm. Düşünün, yarın yine gelirim.", {"tag": "smugly", "gap": 0.6}),
+        ], zeynep_x=300, zeynep_enter=False, gap=0.28,
+            actors=[{"kind": "beton", "x": 790, "scale": 0.84, "enter": True, "appear": 0.0}]),
+        Shot(clear, [
+            (Y, "Ulu! Ulu! Adam buraya beton dökecekmiş!", {"arms": True, "mood": "worried", "tag": "panicked"}),
+            (U, "Sakin ol Zeyto. Zeytin ağacı kolay kolay pes etmez.", {"tag": "calmly"}),
+            (Z, "Ama haklı mı? Yaşlı ağaçlar gerçekten bitmiş mi?", {}),
+            (U, "Yaşlı ağaç, ölmüş ağaç değildir evlat. Bakılırsa yüzlerce yıl daha meyve verir.", {"tag": "warmly"}),
+        ], zeynep_x=830, zeyto_x=610, zeynep_scale=0.66, pan=False, gap=0.28, actors=ulu_actor),
+        Shot(day, [
+            (Z, "Dedem yaşlı ağaçları nasıl gençleştirirdi, bakalım. Bir: Kuruyan ve hastalanan dallar kesilir.", {"step": 0, "point": True}),
+            (Z, "İki: Yaşlı kalın dallar birkaç yıla bölünerek budanır. Ağaç yeni, verimli sürgünler verir.", {"step": 1, "point": True}),
+            (Y, "Yani Ulu'ya güzellik bakımı!", {"arms": True, "tag": "giggles"}),
+            (Z, "Üç: Ağacın dibi çapalanır, toprağa yanmış hayvan gübresi verilir.", {"step": 2, "point": True}),
+        ], zeynep_x=270, zeyto_x=840, gap=0.28, steps=[
+            ("Kuru dalları kes", ic_dry_branch()), ("Gençleştirme budaması", ic_saw()), ("Toprağı besle", ic_manure())]),
+        Shot(clear, [
+            (Y, "Ulu... Yapraklarında bu halka halka lekeler ne?", {"mood": "worried", "tag": "scared"}),
+            (U, "Bilmiyorum Zeyto... Kendimi hiç iyi hissetmiyorum.", {"tag": "weakly"}),
+            (Z, "Bu bir hastalık. Hemen bir şey yapmalıyız!", {"tag": "alarmed"}),
+        ], zeynep_x=830, zeyto_x=610, zeynep_scale=0.66, pan=False, gap=0.3, card=ic_spot_leaf().resize((620, 620)),
+            actors=[{"kind": "ulu", "x": 280, "feet": 1900, "scale": 0.95, "wake": None, "eyes": 0.5}]),
+        end_shot("Bölüm 5 bu akşam 20:00", "Ulu Hastalandı", GREEN_OLIVE, cta="Takip et, hikâyeyi kaçırma!"),
+    ]
+    return render_episode(shots, "BÖLÜM 4", OUT + "S1B4_beton_bey.mp4")
+
+
+def ep5():
+    dusk = bg_clearing(True)
+    day = bg_orchard(("p",))
+    Z, Y, U = "zeynep", "zeyto", "ulu"
+    tired = [{"kind": "ulu", "x": 280, "feet": 1900, "scale": 0.95, "wake": None, "eyes": 0.5}]
+    glow = Image.new("RGBA", (360, 360), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    for r, a in [(170, 40), (120, 80), (70, 160), (30, 255)]:
+        gd.ellipse([180 - r, 180 - r, 180 + r, 180 + r], fill=(255, 230, 140, a))
+    shots = [
+        Shot(dusk, [
+            (Z, "Buldum! Dedemin defterinde bu lekeler var. Adı halkalı leke hastalığı.", {"tag": "concerned"}),
+            (Y, "Hastalık mı? Ulu iyileşecek mi?", {"mood": "worried", "tag": "scared"}),
+            (Z, "Merak etme. Bir mantar hastalığı bu. Yağmurlu, nemli havada yayılır ama tedavisi var.", {"tag": "reassuring"}),
+            (U, "Deden de böyle derdi... Ellerine güveniyorum evlat.", {"tag": "weakly"}),
+        ], zeynep_x=830, zeyto_x=610, zeynep_scale=0.66, pan=False, gap=0.28, tint=((30, 40, 90), 0.2), actors=tired),
+        Shot(day, [
+            (Z, "Bir: Sonbaharda ve ilkbaharda bakırlı bir ilaçla ilaçlanır. Dozu için tarım müdürlüğüne danışılır.", {"step": 0, "point": True}),
+            (Z, "İki: Budamayla ağacın içi açılır. Güneş ve hava girince nem azalır, mantar da azalır.", {"step": 1, "point": True}),
+            (Y, "Ulu'nun penceresini açıyoruz yani!", {"arms": True, "tag": "excited"}),
+            (Z, "Üç: Yere dökülen hastalıklı yapraklar toplanıp zeytinlikten uzaklaştırılır.", {"step": 2, "point": True}),
+        ], zeynep_x=270, zeyto_x=840, gap=0.28, steps=[
+            ("Bakırlı ilaç", ic_copper()), ("İçi açık budama", ic_open_canopy()), ("Yaprakları topla", ic_fallen_leaves())]),
+        Shot(dusk, [
+            (U, "Teşekkür ederim evlat. Deden de beni böyle iyileştirmişti.", {"tag": "warmly"}),
+            (U, "Artık sana bir ipucu verebilirim. Kayıp sayfa... en eski kökün altında.", {"tag": "whispers"}),
+            (Y, "En eski kök mü? Hangisi?!", {"arms": True, "mood": "wow", "tag": "excited"}),
+            (Z, "Şşş... Bakın! Köklerin arasında bir şey parlıyor!", {"tag": "whispers", "gap": 0.7}),
+        ], zeynep_x=830, zeyto_x=610, zeynep_scale=0.66, pan=False, gap=0.28, tint=((30, 40, 90), 0.2),
+            props_top=[(glow, 470, 1800)], actors=[{"kind": "ulu", "x": 280, "feet": 1900, "scale": 0.95, "wake": None}]),
+        end_shot("Bölüm 6 yarın 13:00", "Gece Kazısı", GREEN_OLIVE, cta="Takip et, hikâyeyi kaçırma!"),
+    ]
+    return render_episode(shots, "BÖLÜM 5", OUT + "S1B5_ulu_hastalandi.mp4")
+
+
 if __name__ == "__main__":
     for w in sys.argv[1:] or ["1"]:
         print(globals()["ep" + w]())
